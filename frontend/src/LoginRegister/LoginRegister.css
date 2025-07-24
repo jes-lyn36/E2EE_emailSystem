@@ -1,0 +1,94 @@
+.login-register-page {
+  display: flex;
+  flex-direction: row;
+  background-image: url('loginRegisterBackground.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.login-register-welcome-text {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 20px;
+  margin-top: 10vh;
+  margin-left: 10vw;
+  color: #4B629E; /* Example color */
+}
+
+.login-register-title {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: clamp(70px, 7vw, 100px);
+  color: #3057BC;
+}
+
+.login-register-subtitle {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: clamp(30px, 2vw, 35px);
+  color: #3057BC; /* Example color */
+  margin-top: 10px;
+  width: max(300px, 60%);
+  margin-left: 25px;
+}
+
+.login-register-form-page {
+  display: grid;
+  place-items: center;
+  width: fit-content;
+  position: relative;
+  margin-right: 5vw;
+}
+
+.login-register-background {
+  grid-area: 1 / 1;
+  width: 90%;
+  height: auto;
+  display: block;
+}
+
+.login-register-form {
+  grid-area: 1 / 1; /* Places it on top of the image */
+  padding: 20px;
+  width: 90%; /* or fixed size */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 1170px) {
+  .login-register-page {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-register-welcome-text {
+    display: none;
+  }
+
+  .login-register-background {
+    width: 75%;
+  }
+
+  .login-register-form-page {
+    display: grid;
+    margin-right: 0px;
+  }
+}
+
+/* .login-register-form {
+  display: flex;
+
+  flex-direction: column;
+  background-image: url('loginRegisterBox.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 700px;
+  height: 760px;
+  padding: 100px;
+} */
