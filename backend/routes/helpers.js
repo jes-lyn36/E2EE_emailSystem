@@ -4,21 +4,13 @@ import User from "../models/User.js";
 const ALGORITHM = 'aes-256-cbc';
 const IV_LENGTH = 16;
 
-// export function encryptMessage(message, publicKey) {
-//   return crypto.publicEncrypt({
-//     key: publicKey,
-//     padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-//     oaepHash: "sha256",
-//   }, Buffer.from(message, 'base64'));
-// }
-
-// export function decryptMessage(encryptedMessage, privateKey) {
-//   return crypto.privateDecrypt({
-//     key: privateKey,
-//     padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-//     oaepHash: "sha256",
-//   }, encryptedMessage).toString();
-// }
+////////////////////////////////////////
+/* 
+These function aren't used as encryption and decryption are now handled on the frontend.
+However, they are left here for future reference in case we need to implement server-side 
+encryption or for any other use cases.
+*/
+////////////////////////////////////////
 
 export const encryptMessage = (message, recipientPublicKey, senderPublicKey) => {
   // 1. Generate a random symmetric key
@@ -31,29 +23,28 @@ export const encryptMessage = (message, recipientPublicKey, senderPublicKey) => 
   encryptedMessage += cipher.final('hex');
 
   // 3. Encrypt the symmetric key with the recipient's RSA public key
-  // You might need to import the public key properly, depending on its format (PEM, etc.)
-
   const recipientEncryptedSymmetricKey = crypto.publicEncrypt(
     {
       key: recipientPublicKey,
-      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING, // Recommended padding for RSA
+      // Recommended padding for RSA
+      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
     },
     symmetricKey
-  ).toString('base64'); // Store as base64
+  ).toString('base64');
 
   const senderEncryptedSymmetricKey = crypto.publicEncrypt(
     {
       key: senderPublicKey,
-      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING, // Recommended padding for RSA
+      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
     },
     symmetricKey
-  ).toString('base64'); // Store as base64
+  ).toString('base64');
 
   return {
     encryptedMessage: encryptedMessage,
     recipientEncryptedSymmetricKey: recipientEncryptedSymmetricKey,
     senderEncryptedSymmetricKey: senderEncryptedSymmetricKey,
-    iv: iv.toString('hex') // Store IV for decryption
+    iv: iv.toString('hex')
   };
 };
 

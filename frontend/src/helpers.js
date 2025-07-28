@@ -1,3 +1,7 @@
+///////////////////////////////////////////////////////////////////////
+/* This is where all the encryption and decryption logic is handled. */
+///////////////////////////////////////////////////////////////////////
+
 // Convert PEM to CryptoKey
 async function importRSAPublicKey(pem) {
   const binaryDer = str2ab(pemToBase64(pem));
@@ -105,29 +109,12 @@ export async function decryptMessage(encryptedData, userPrivateKeyPEM) {
   const privateKey = await importRSAPrivateKey(userPrivateKeyPEM);
   const encryptedSymmetricKey = encryptedData.encryptedSymmetricKey;
 
-  console.log("View Email (decrypting): ")
-  console.log("Private key PEM: ", userPrivateKeyPEM);
-  console.log("Private key: ", privateKey);
-  console.log("encryptedMessage: ", encryptedData.encryptedMessage);
-  console.log("encryptedSymmetricKey: ", encryptedSymmetricKey);
-  console.log("iv: ", encryptedData.iv);
-  console.log("##########################");
-
-  console.log("Key length:", encryptedSymmetricKey.length);
-  console.log("Key preview:", encryptedSymmetricKey.slice(0, 50));
-  console.log("Invalid char test:", /[^A-Za-z0-9+/=]/.test(encryptedSymmetricKey));
-  console.log("Type of encryptedSymmetricKey:", typeof encryptedSymmetricKey);
-  console.log("Is string:", typeof encryptedSymmetricKey === "string");
-  console.log("Value:", encryptedSymmetricKey);
-
   // Decrypt symmetric key
   const decryptedSymmetricKeyBuffer = await crypto.subtle.decrypt(
   { name: "RSA-OAEP" },
   privateKey,
   base64ToArrayBuffer(encryptedSymmetricKey)
 );
-
-  console.log("Decrypted Symmetric Key: ", decryptedSymmetricKeyBuffer);
 
   // Import AES key
   const aesKey = await crypto.subtle.importKey(

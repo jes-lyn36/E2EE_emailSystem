@@ -5,8 +5,9 @@ import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import CryptoJS from 'crypto-js';
-import { backend_url } from '../../config';
 import axios from 'axios';
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 const Register = ({setWelcomeName, setPassword}) => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const Register = ({setWelcomeName, setPassword}) => {
       const session = await axios.get(`${backend_url}/auth/check/${response.data.id}`, {
         withCredentials: true
       });
-      console.log("Session Check Response:", session.data);
+
       if (!session.data.loggedIn) {
         alert('Session not created. Please try logging in again.');
         return;
@@ -71,20 +72,12 @@ const Register = ({setWelcomeName, setPassword}) => {
       localStorage.setItem('encryptedPrivateKey', encryptedPrivateKey);
       // localStorage.setItem('password', userPassword);
 
-      console.log("User Registered Info:");
-      console.log("Name: ", userName);
-      console.log("Email: ", userEmail);
-      console.log("Public Key: ", publicKeyPem);
-      console.log("Private Key: ", privateKeyPem);
-      console.log("Password: ", userPassword);
-      console.log("##########################");
-
       setWelcomeName(userName);
       setPassword(userPassword);
 
       navigate('/inbox');
     } catch (error) {
-      console.log("Registration error:", error);
+      console.error("Registration error:", error);
       alert('Registration failed: ' + JSON.stringify(error.response.data.message));
     }
   };

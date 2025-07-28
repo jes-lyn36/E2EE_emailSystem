@@ -2,8 +2,6 @@ import Button from 'react-bootstrap/Button';
 import { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { backend_url } from '../../config';
-
 import LandingPage from '../LandingPage/LandingPage';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
@@ -11,6 +9,8 @@ import Inbox from '../Inbox/Inbox';
 import Sent from '../Sent/Sent';
 import Email from '../Email/Email';
 import InputSessionId from '../InputSessionId/InputSessionId';
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 const Pages = () => {
   const [token, setToken] = useState(null);
@@ -34,7 +34,6 @@ const Pages = () => {
 
   useEffect(() => {
     const handleShowSessionIdInput = async () => {
-      console.log("useEffect triggered: currentUserId =", currentUserId);
       if (!currentUserId) return;
 
       const response = await axios.get(`${backend_url}/auth/checkNewLogin/${currentUserId}`, {
@@ -52,11 +51,25 @@ const Pages = () => {
     return () => clearInterval(intervalId); // Cleanup
   }, [currentUserId]);
 
-  const handleAllowNewLogin = async () => {
-    console.log("HERE", showSessionIdInput, " and ", inputSessionId);
-    if (!showSessionIdInput || !inputSessionId) return;
+  const resetNewLoginFlag = async () => {
+    try {
+      const response = await axios.delete(`${backend_url}/auth/resetNewLoginFlag/${currentUserId}`, {
+        withCredentials: true
+      });
+      if (response.data.success) {
+        setShowSessionIdInput(false);
+        setInputSessionId('');
+      } else {
+        console.error("Failed to reset new login flag");
+      }
+    } catch (error) {
+      console.error("Error resetting new login flag:", error);
+      alert('Error resetting new login flag:', error.message);
+    }
+  };
 
-    console.log("localstorage fecth : ", localStorage.getItem('encryptedPrivateKey'));
+  const handleAllowNewLogin = async () => {
+    if (!showSessionIdInput || !inputSessionId) return;
 
     try {
       const response = await axios.post(`${backend_url}/auth/allowNewLoggedIn/${currentUserId}`, {
@@ -90,7 +103,7 @@ const Pages = () => {
         <Route path="/email" element={<Email />} />
       </Routes>
 
-      <InputSessionId setInputSessionId={setInputSessionId} handleAllowNewLogin={handleAllowNewLogin} setShow={setShowSessionIdInput} show={showSessionIdInput} />
+      <InputSessionId resetNewLoginFlag={resetNewLoginFlag} setInputSessionId={setInputSessionId} handleAllowNewLogin={handleAllowNewLogin} setShow={setShowSessionIdInput} show={showSessionIdInput} />
     </>
   );
 };

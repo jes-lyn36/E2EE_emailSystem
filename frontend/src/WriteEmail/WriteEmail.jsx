@@ -5,10 +5,9 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { useState } from 'react';
 import axios from 'axios';
-import { backend_url } from '../../config';
 import { encryptMessage } from '../helpers';
-import { receivedEmails } from '../../../backend/routes/email';
 
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 function WriteEmail({ show, onClose }) {
   const [recipientEmail, setRecipientEmail] = useState('');
@@ -17,7 +16,7 @@ function WriteEmail({ show, onClose }) {
 
   const handleSend = async () => {
     try {
-      // Step 1: Fetch recipient's public key
+      // Fetch recipient's public key
       const recipientData = await axios.get(
         `${backend_url}/auth/getkey/${recipientEmail}`,
         { withCredentials: true }
@@ -38,18 +37,7 @@ function WriteEmail({ show, onClose }) {
 
       const { encryptedMessage, recipientEncryptedSymmetricKey, senderEncryptedSymmetricKey, iv } = await encryptMessage(message, recipientPublicKeyPem, senderPublicKeyPem);
 
-      console.log("Write Email (encryption) : ")
-      console.log("Recipient Public Key: ", recipientPublicKeyPem);
-      console.log("Sender Public Key: ", senderPublicKeyPem);
-      console.log("title: ", subject);
-      console.log("recipient: ", recipientEmail)
-      console.log("Encrypted Message: ", encryptedMessage);
-      console.log("Encrypted Symmetric Key for Recipient: ", recipientEncryptedSymmetricKey);
-      console.log("Encrypted Symmetric Key for Sender: ", senderEncryptedSymmetricKey);
-      console.log("IV: ", iv);
-      console.log("##########################");
-
-      // Step 6: Send all to backend
+      // Send all to backend
       const response = await axios.post(
         `${backend_url}/email/send`,
         {

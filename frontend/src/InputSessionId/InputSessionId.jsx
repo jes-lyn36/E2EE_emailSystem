@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
-function InputSessionId({ setInputSessionId, handleAllowNewLogin, setShow, show }) {
+function InputSessionId({ resetNewLoginFlag, setInputSessionId, handleAllowNewLogin, setShow, show }) {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -28,7 +28,7 @@ function InputSessionId({ setInputSessionId, handleAllowNewLogin, setShow, show 
         </InputGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={() => { resetNewLoginFlag(); handleClose(); }}>
             Close
           </Button>
           <Button variant="primary" onClick={() => { handleAllowNewLogin(); handleClose(); }}>

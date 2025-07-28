@@ -5,9 +5,10 @@ import Button from 'react-bootstrap/Button';
 import Email from '../Email/Email';
 import WriteEmail from '../WriteEmail/WriteEmail';
 import axios from 'axios';
-import { backend_url } from '../../config';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 const Inbox = ({setCurrentUserId, logout, password, welcomeName}) => {
   const [showCompose, setShowCompose] = useState(false);
@@ -27,7 +28,6 @@ const Inbox = ({setCurrentUserId, logout, password, welcomeName}) => {
         // Fetch inbox for this user
         const inboxRes = await axios.get(`${backend_url}/email/inbox/${userId}`, { withCredentials: true });
         setInboxEmails(inboxRes.data.emails);
-        console.log("Inbox Emails: ", inboxRes.data.emails);
       } catch (error) {
         console.error("Error fetching inbox emails:", error);
       }

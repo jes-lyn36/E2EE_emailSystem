@@ -31,7 +31,8 @@ export const sendEmail = async (req, res) => {
   // Just let encryptedAttachments be null for now
   let encryptedAttachments = null;
 
-  // Ecvryption moved to frontend
+  // Encryption moved to frontend
+  // This is left commented out for future reference
   // const encryptedMessage = encryptMessage(body, recipientUser.publicKey, senderUser.publicKey);
 
   // let encryptedAttachments = null;
@@ -80,7 +81,7 @@ export const receivedEmails = async (req, res) => {
     return res.status(400).json({ message: "Recipient email is required" });
   }
 
-  // Check if the user is authenticated and authorized to access the recipient's emails !!!
+  // Check if the user is authenticated and authorized to access the recipient's emails   !!!
   // if (!req.user || req.user.email !== recipient) {
   //   return res.status(403).json({ message: "Unauthorized access" });
   // }
@@ -125,31 +126,12 @@ export const sentEmails = async (req, res) => {
     return res.status(404).json({ message: "Sender not found" });
   }
 
-  // Check if the user is authenticated and authorized to access the sender's emails !!!
+  // Check if the user is authenticated and authorized to access the sender's emails   !!!
   // if (!req.user || req.user.email !== sender) {
   //   return res.status(403).json({ message: "Unauthorized access" });
   // }
 
   const emails = await Email.find({ senderId: senderUser._id });
-  
-  // Decryption is moved to the frontend
-  //   // if (emails) {
-  //   // Decrypt the messages for the recipient
-  //   emails.forEach(email => {
-  //     let encryptData = {
-  //       encryptedMessage: email.message,
-  //       encryptedSymmetricKey: email.senderEncryptedSymmetricKey,
-  //       iv: email.iv
-  //     };
-
-  //     email.message = decryptMessage(encryptData, senderUser.privateKey);
-  //     // if (email.attachments) {
-  //     //   email.attachments.forEach(attachment => {
-  //     //     attachment.data = decryptMessage(attachment.data, req.user.privateKey);
-  //     //   });
-  //     // }
-  //   });
-  // }
   
   let returnedEmails = [];
 
@@ -157,6 +139,7 @@ export const sentEmails = async (req, res) => {
     let mail = {
       recipient: await idToEmail(email.recipientId),
       sender: await idToEmail(email.senderId),
+      title: email.title,
       encryptedMessage: email.message,
       encryptedSymmetricKey: email.senderEncryptedSymmetricKey,
       iv: email.iv

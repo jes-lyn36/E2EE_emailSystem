@@ -33,7 +33,6 @@ export const register = async (req, res) => {
     req.session.sessionId = crypto.randomBytes(16).toString("hex");
 
     await newUser.save();
-    console.log("Registering user:", {name, email, password, publicKey});
     res.status(200).json({ message: "User registered successfully", id: newUser._id });
   } catch (error) {
     console.error("Error registering user:", error);
@@ -49,7 +48,7 @@ export const login = async (req, res) => {
     return res.status(400).json({ message: "User not found" });
   }
 
-  const isMatch = bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
     return res.status(400).json({ message: "Invalid credentials" });
@@ -93,6 +92,20 @@ export const checkNewLogin = async (req, res) => {
   }
 };
 
+export const resetNewLoginFlag = async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  user.newLogin = false;
+  user.newSession = '';
+  await user.save();
+
+  res.status(200).json({ message: "New login flag reset successfully" });
+};
+
 export const allowNewLoggedIn = async (req, res) => {
   const { userId } = req.params;
   const { givenSessionId, encryptedPrivateKey } = req.body;
@@ -117,7 +130,7 @@ export const allowNewLoggedIn = async (req, res) => {
     // Delete the sentInfo after 5 minutes
     setTimeout(async () => {
       await TempNewSession.deleteOne({ sessionId: givenSessionId });
-    }, 40 * 1000); // 40 seconds in milliseconds
+    }, 10 * 1000); // 10 seconds in milliseconds since polling is every 5 seconds
 
     return res.status(200).json({ privateKeySent: true });
   }
@@ -127,8 +140,6 @@ export const allowNewLoggedIn = async (req, res) => {
 
 export const getEncryptedPrivateKey = async (req, res) => {
   const allowLogin = await TempNewSession.findOne({ sessionId: req.session.sessionId });
-
-  console.log("allowLogin:", allowLogin);
 
   if (!allowLogin) {
     return res.status(404).json({ message: "No private key found for this session" });

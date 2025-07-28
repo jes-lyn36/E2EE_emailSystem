@@ -12,13 +12,10 @@ function ViewEmail({ password, email, show, onClose }) {
   const decrypt = async () => {
     const encrypted = localStorage.getItem('encryptedPrivateKey');
     // const password = localStorage.getItem('password');
-    console.log(password);
     
     if (!encrypted || !password) return;
 
     const decryptedPEM = CryptoJS.AES.decrypt(encrypted, password).toString(CryptoJS.enc.Utf8);
-
-    console.log("EMAIL: ", email.title);
 
     const encryptedData = {
       encryptedMessage: email.encryptedMessage,
@@ -28,7 +25,6 @@ function ViewEmail({ password, email, show, onClose }) {
 
     try {
       const message = await decryptMessage(encryptedData, decryptedPEM);
-      console.log("Decrypted Message: ", message);
       setDecryptedMessage(message);
     } catch (err) {
       console.error("Failed to decrypt message:", err);

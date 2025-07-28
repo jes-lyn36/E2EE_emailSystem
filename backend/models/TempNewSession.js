@@ -5,5 +5,8 @@ const tempNewSessionSchema = new mongoose.Schema({
   encryptedPrivateKey: String
 });
 
-const TempNewSession = mongoose.model("TempNewSession", tempNewSessionSchema);
+const TempNewSession = mongoose.model(
+  "TempNewSession",
+  tempNewSessionSchema
+);
 export default TempNewSession;

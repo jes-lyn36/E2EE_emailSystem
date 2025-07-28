@@ -5,9 +5,10 @@ import Button from 'react-bootstrap/Button';
 import WriteEmail from '../WriteEmail/WriteEmail';
 import Email from '../Email/Email';
 import axios from 'axios';
-import { backend_url } from '../../config';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 const Sent = ({setCurrentUserId, logout, welcomeName, password}) => {
   const [showCompose, setShowCompose] = useState(false);
@@ -27,7 +28,6 @@ const Sent = ({setCurrentUserId, logout, welcomeName, password}) => {
         // Fetch sent emails for this user
         const sentRes = await axios.get(`${backend_url}/email/sent/${userId}`, { withCredentials: true });
         setSentEmails(sentRes.data.emails);
-        console.log("Sent Emails: ", sentRes.data.emails);
       } catch (error) {
         console.error("Error fetching sent emails:", error);
       }
@@ -38,10 +38,6 @@ const Sent = ({setCurrentUserId, logout, welcomeName, password}) => {
     const intervalId = setInterval(fetchSentEmails, 5000); // Poll every 5 seconds
     return () => clearInterval(intervalId); // Cleanup
   }, []);
-
-  useEffect(() => {
-    console.log("Sent Emails updated: ", sentEmails);
-  }, [sentEmails]);
 
   return (
     <div className="emails">

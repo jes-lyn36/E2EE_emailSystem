@@ -5,7 +5,8 @@ import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { backend_url } from '../../config';
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 const Login = ({ setWelcomeName, setPassword }) => {
   const navigate = useNavigate();
@@ -28,13 +29,10 @@ const Login = ({ setWelcomeName, setPassword }) => {
         withCredentials: true
       });
 
-      console.log("Login Response:", response.data);
-
       // check if user session is made
       const session = await axios.get(`${backend_url}/auth/check/${response.data.id}`, {
         withCredentials: true
       });
-      console.log("Session Check Response:", session.data);
       if (!session.data.loggedIn) {
         alert('Session not created. Please try logging in again.');
         return;
@@ -47,21 +45,18 @@ const Login = ({ setWelcomeName, setPassword }) => {
       setWelcomeName(response.data.name);
       setPassword(userPassword);
     } catch (error) {
-      console.log("Registration error:", error);
-      alert('Registration failed: ' + JSON.stringify(error.response.data.message));
+      console.error("Login error:", error);
+      alert('Login failed: ' + JSON.stringify(error.response.data.message));
     }
   }
 
   useEffect(() => {
     const fetchPrivateKey = async () => {
-      console.log("Polling for private key...");
       if (!startPollingForPrivateKey) return; 
       try {
         const response = await axios.get(`${backend_url}/auth/getEncryptedPrivateKey`, {
           withCredentials: true
         });
-
-        console.log("Private Key Response:", response.data);
 
         if (response.data.encryptedPrivateKey) {
           localStorage.setItem('encryptedPrivateKey', response.data.encryptedPrivateKey);
@@ -71,6 +66,7 @@ const Login = ({ setWelcomeName, setPassword }) => {
           navigate('/inbox');
         }
       } catch (error) {
+        alert('Error fetching private key: ' + error.message);
         console.error("Error fetching private key:", error);
       }
     };
