@@ -33,7 +33,7 @@ app.use(
     }),
     cookie: {
       httpOnly: true,
-      secure: false, // true if using HTTPS
+      secure: process.env.NODE_ENV === "production", // true if using HTTPS
       maxAge: 1000 * 60 * 60 * 24 // 1 day
     }
   })
@@ -42,6 +42,8 @@ app.use(
 // Routes
 app.use("/", routes);
 
+port = process.env.PORT || 8080;
+
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
-  .then(() => app.listen(process.env.PORT, () => console.log(`Server running on port: ${process.env.PORT}`)))
+  .then(() => app.listen(port, () => console.log(`Server running on port: ${port}`)))
   .catch((error) => console.log(error.message));  
