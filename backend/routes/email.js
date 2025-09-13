@@ -1,6 +1,6 @@
 // sendEmail, receivedEmail, sentEmail, getEmailById
 import User from "../models/User.js";
-import Email from "../models/email.js";
+import Email from "../models/Email.js";
 import { encryptMessage, idToEmail } from "./helpers.js";
 
 export const sendEmail = async (req, res) => {
