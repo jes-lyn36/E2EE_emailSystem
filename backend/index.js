@@ -42,7 +42,7 @@ app.use(
 // Routes
 app.use("/", routes);
 
-port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => app.listen(port, () => console.log(`Server running on port: ${port}`)))
