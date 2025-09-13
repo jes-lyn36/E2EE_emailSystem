@@ -1,6 +1,6 @@
 import DataModel from "../models/dataModel.js";
 import User from "../models/User.js";
-import Email from "../models/email.js";
+import Email from "../models/Email.js";
 import TempNewSession from "../models/TempNewSession.js";
 
 export const getAuth = async (req, res) => {
